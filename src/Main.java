@@ -22,7 +22,7 @@ public class Main {
         loginUsuario = loginUsuarioDAO.aprovarLogin(login, senha);
 
         if(loginUsuario.getLogin() != null){
-            estoque.rodar(loginUsuario, teclado);
+            estoque.rodar(loginUsuario);
         }
     }
 }
