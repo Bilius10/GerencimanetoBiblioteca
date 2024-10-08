@@ -22,49 +22,80 @@ public class Estoque {
     LivroDAO livroDAO = new LivroDAO();
     List<Livro> livros = new ArrayList<>();
 
-    public void rodar(LoginUsuario loginUsuario, Scanner teclado){
+    public void rodar(LoginUsuario loginUsuario){
 
-        int opcao = 0;
-        while (opcao != 5){
+        Scanner teclado = new Scanner(System.in);
+
+        String opcao = "0";
+        while (!opcao.equals("5")){
             System.out.println("\n 1-Lançar livro \n 2-Fazer Emprestimo \n 3-Fazer devolução \n 4-Listar biblioteca \n 5-Sair");
-            opcao = teclado.nextInt();
-            System.out.println(" ");
+            opcao = teclado.nextLine();
 
             switch (opcao) {
-                case 1:
+                case "1":
                     System.out.print("Nome do Livro: ");
-                    livro.setNomeLivro(teclado.next());
+                    String nomeLivro = teclado.nextLine();
+                    livro.setNomeLivro(nomeLivro);
+
                     System.out.print("Nome do Autor: ");
-                    livro.setAutor(teclado.next());
+                    String nomeAutor = teclado.nextLine();
+                    livro.setAutor(nomeAutor);
+
                     System.out.print("Nome do Editora: ");
-                    livro.setEditora(teclado.next());
-                    System.out.print("Nome do Data de lançamento: ");
-                    livro.setDataLancamento(teclado.nextInt());
-                    System.out.print("Nome do Quantidade: ");
-                    livro.setQuantidade(teclado.nextInt());
+                    String nomeEditora = teclado.nextLine();
+                    livro.setEditora(nomeEditora);
+
+                    System.out.print("Data de lançamento: ");
+                    int dataLancamento = teclado.nextInt();
+                    livro.setDataLancamento(dataLancamento);
+
+                    System.out.print("Quantidade: ");
+                    int quantidade = teclado.nextInt();
+                    livro.setQuantidade(quantidade);
+
                     livroDAO.createLivro(livro);
 
                     break;
-                case 2:
+                case "2":
                     System.out.print("ID usuario: ");
-                    emprestimo.setIdUsuario(teclado.nextInt());
+                    int idUsuarioEmprestimo = teclado.nextInt();
+                    emprestimo.setIdUsuario(idUsuarioEmprestimo);
+
                     System.out.print("ID livro: ");
-                    emprestimo.setIdLivro(teclado.nextInt());
+                    int idLivroEmprestimo = teclado.nextInt();
+                    emprestimo.setIdLivro(idLivroEmprestimo);
+
                     System.out.print("Data do emprestimo: ");
                     String dataEmprestimo = teclado.next();
-                    emprestimo.setDataDevolucao(java.sql.Date.valueOf(dataEmprestimo.replace("/", "-")));
-                    System.out.print("Data da devolução: (ano-mes-dia)");
-                    String dataDevolucao = teclado.next();
-                    emprestimo.setDataDevolucao(java.sql.Date.valueOf(dataDevolucao.replace("/", "-")));
+                    emprestimo.setDataEmprestimo(java.sql.Date.valueOf(dataEmprestimo.replace("/", "-")));
+
+                    System.out.print("Data da devolução (ano-mes-dia): ");
+                    String dataDevolucaoEmprestimo = teclado.next();
+
+                    emprestimo.setDataDevolucao(java.sql.Date.valueOf(dataDevolucaoEmprestimo.replace("/", "-")));
+
                     emprestimoDAO.createEmprestimo(emprestimo);
+                    break;
+                case "3":
+                    System.out.print("ID usuario: ");
+                    int idUsuarioDevolucao = teclado.nextInt();
+                    devolucao.setIdUsario(idUsuarioDevolucao);
+
+                    System.out.print("ID livro: ");
+                    int idLivroDevolucao = teclado.nextInt();
+                    devolucao.setIdLivro(idLivroDevolucao);
+
+                    System.out.print("Data da devolução: ");
+                    String dataDevolucao = teclado.next();
+                    devolucao.setDataDevolucao(java.sql.Date.valueOf(dataDevolucao.replace("/", "-")));
+
+                    devolucaoDAO.crateDevolucao(devolucao);
 
                     break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                default:
-                    System.out.println("Saindo");
+                case "4":
+                    livros = livroDAO.retornoEstoqueLivros();
+                    livros.forEach(System.out::println);
+
                     break;
             }
         }
