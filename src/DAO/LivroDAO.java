@@ -5,7 +5,10 @@ import Util.ConnectionMysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LivroDAO {
 
@@ -52,5 +55,64 @@ public class LivroDAO {
         }catch (SQLException e){
             System.out.println("Erro ao atualizar estoque "+e.getMessage());
         }
+    }
+
+    public List<Livro> retornoEstoqueLivros(){
+        List<Livro> livros = new ArrayList<>();
+        try {
+            Connection coon = ConnectionMysql.openConnection();
+
+            String sqlEstoque = "SELECT * FROM livros WHERE Ativo = 1";
+
+            PreparedStatement statementEstoque = coon.prepareStatement(sqlEstoque);
+            ResultSet resultSetEstoque = statementEstoque.executeQuery();
+
+            while (resultSetEstoque.next()){
+                Livro livro = new Livro();
+                livro.setIdLivro(resultSetEstoque.getInt("idLivros"));
+                livro.setNomeLivro(resultSetEstoque.getString("nomeLivro"));
+                livro.setQuantidade(resultSetEstoque.getInt("quantidade"));
+                livro.setEditora(resultSetEstoque.getString("Editora"));
+                livro.setAutor(resultSetEstoque.getString("Autor"));
+                livro.setDataLancamento(resultSetEstoque.getInt("dataLancamento"));
+                livro.setAtivo(resultSetEstoque.getInt("Ativo"));
+                livros.add(livro);
+            }
+
+
+        }catch (SQLException e){
+            System.out.println("Erro ao listar estoque: "+e.getMessage()     );
+        }
+
+        return livros;
+    }
+
+    public Livro findByID(int id){
+        Livro livro = new Livro();
+        try {
+
+            Connection coon = ConnectionMysql.openConnection();
+
+            String sqlfind = "SELECT * FROM livros WHERE idLivros = ?";
+
+            PreparedStatement statementFind = coon.prepareStatement(sqlfind);
+            statementFind.setInt(1, id);
+            ResultSet resultSetFind = statementFind.executeQuery();
+
+            while (resultSetFind.next()){
+                livro.setIdLivro(id);
+                livro.setNomeLivro(resultSetFind.getString("nomeLivro"));
+                livro.setQuantidade(resultSetFind.getInt("quantidade"));
+                livro.setEditora(resultSetFind.getString("Editora"));
+                livro.setAutor(resultSetFind.getString("Autor"));
+                livro.setDataLancamento(resultSetFind.getInt("dataLancamento"));
+                livro.setAtivo(resultSetFind.getInt("Ativo"));
+            }
+
+        }catch (SQLException e){
+            System.out.println("Erro ao achar livro: "+e.getMessage());
+        }
+
+        return livro;
     }
 }
